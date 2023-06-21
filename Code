@@ -1,0 +1,106 @@
+!apt-get install -y chromium-browser
+!apt install chromium-chromedriver
+!pip install selenium openpyxl
+import openpyxl
+from selenium import webdriver
+import openpyxl
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+# LinkedIn Login Function
+def login_to_linkedin(username, password):
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.binary_location = '/usr/bin/chromium-browser'
+    driver = webdriver.Chrome(options=options)
+    #driver = webdriver.Chrome(executable_path='/usr/lib/chromium-browser/chromedriver', options=options)
+    driver.get('https://www.linkedin.com/login')
+    username_input = driver.find_element(By.ID, 'username')
+    username_input.send_keys(username)
+    password_input = driver.find_element(By.ID, 'password')
+    password_input.send_keys(password)
+    password_input.send_keys(Keys.ENTER)
+    try:
+        # Waiting for the login to complete and check if successfully logged in
+        WebDriverWait(driver, 10).until(EC.url_changes('https://www.linkedin.com/login'))
+        return driver
+    except TimeoutException:
+        print("Login failed.")
+        driver.quit()
+        return None
+# Decrypt Password Function
+def decrypt_password(encrypted_password):
+
+    return encrypted_password
+# Retrieve Unread Messages and Notifications
+def get_unread_data(driver):
+    unread_messages = 0
+    unread_notifications = 0
+
+    # Code to retrieve the number of unread messages and notifications from the LinkedIn profile using the provided Selenium driver
+
+    return unread_messages, unread_notifications
+# Save Data to Excel
+def save_data_to_excel(filename, timestamp, unread_messages, unread_notifications):
+    wb = openpyxl.load_workbook(filename)
+    sheet = wb.active
+
+    row = sheet.max_row + 1
+    sheet.cell(row=row, column=1, value=timestamp)
+    sheet.cell(row=row, column=2, value=unread_messages)
+    sheet.cell(row=row, column=3, value=unread_notifications)
+
+    wb.save(filename)
+# Send Email Notification
+def send_email_notification(sender_email, sender_password, recipient_email, unread_messages, unread_notifications, comparison_result):
+    message = MIMEMultipart()
+    message['From'] = sender_email
+    message['To'] = recipient_email
+    message['Subject'] = 'LinkedIn Unread Notifications and Messages'
+
+    body = f"Number of Unread Messages: {unread_messages}\n" \
+           f"Number of Unread Notifications: {unread_notifications}\n" \
+           f"Comparison Result: {comparison_result}"
+    message.attach(MIMEText(body, 'plain'))
+
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(sender_email, sender_password)
+            server.send_message(message)
+        print("Email notification sent successfully.")
+    except smtplib.SMTPException:
+        print("Failed to send email notification.")
+# Main program
+
+# Login to LinkedIn
+username = "mailtotandrima1212@gmail.com"
+encrypted_password = "Sist*2001"
+#driver = login_to_linkedin(username, encrypted_password)
+"""if driver:
+    # Retrieve unread data
+    unread_messages, unread_notifications = get_unread_data(driver)
+    print("Number of Unread Messages:", unread_messages)
+    print("Number of Unread Notifications:", unread_notifications)
+
+    # Save data to Excel
+    filename = "data.xlsx"
+    timestamp = "2023-06-20"
+    save_data_to_excel(filename, timestamp, unread_messages, unread_notifications)
+
+    # Send email notification
+    sender_email = "lt66616@gmail.com"
+    sender_password = "Home@270609"
+    recipient_emails = ["ak270609@gmail.com", "Avinasht270@gmail.com"]
+    comparison_result = "Some comparison result"
+
+    for recipient_email in recipient_emails:
+        send_email_notification(sender_email, sender_password, recipient_email, unread_messages, unread_notifications, comparison_result)
+     Close the browser
+     driver.quit()"""
